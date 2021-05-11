@@ -8,27 +8,23 @@ import welfare from "./category/welfare";
 import Home from "./Home";
 const AppRouter=()=>{
   return(
-    <Router>
-        <Route exact path="/">
-            <Home />
-        </Route>
-        <Route exact path="/dormitory">
-            <dormitory />
-        </Route>
-        <Route exact path="/facility">
-            <facility />
-        </Route>
-        <Route exact path="/human">
-            <human />
-        </Route>
-        <Route exact path="/student">
-            <student />
-        </Route>
-        <Route exact path="/welfare">
-            <welfare />
-        </Route>
-    </Router>
-
+    <>
+        <Router>
+            <Switch>
+                <Route exact path="/dormitory" component={dormitory} />
+            
+                <Route exact path="/facility" component={facility} />
+            
+                <Route exact path="/human" component={human} />
+            
+                <Route exact path="/student" component={student} />
+            
+                <Route exact path="/welfare" component={welfare} />
+        
+                <Route exact path="/" component={Home} />
+            </Switch>
+        </Router>
+    </>
   );
 
 };

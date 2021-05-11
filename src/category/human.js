@@ -3,7 +3,7 @@ import React from "react";
 const human=()=>{
     return(
         <div>
-            human
+           human
         </div>
     );
 }
