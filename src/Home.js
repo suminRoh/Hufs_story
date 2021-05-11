@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Articles from './table/Articles';
 
 const Home=()=>{
     return(
@@ -24,6 +25,7 @@ const Home=()=>{
              <Link to="/welfare">
                  welfare
              </Link>
+             <Articles></Articles>
  
         </div>
     );
