@@ -1,9 +1,10 @@
 import React from "react";
+import Post from "../submit/post";
 
 const student=()=>{
     return(
         <div>
-            student
+            <Post type="학생"/>
         </div>
     );
 }

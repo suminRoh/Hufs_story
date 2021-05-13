@@ -1,10 +1,10 @@
 import React from "react";
 
-const human=()=>{
+const etc=()=>{
     return(
         <div>
-            human
+            etc
         </div>
     );
 }
-export default human;
+export default  etc;
