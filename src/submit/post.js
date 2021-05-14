@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+/*
 import React,{Component} from "react";
 
 class Post extends Component{ 
@@ -23,4 +23,4 @@ class Post extends Component{
  };
 
  export default Post;
- 
+  */

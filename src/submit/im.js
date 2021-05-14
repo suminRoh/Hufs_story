@@ -1,9 +1,10 @@
-import { render } from "@testing-library/react";
+
 import React,{Component} from "react";
 import Control from "./control";
 import ReadContent from "./ReadContent";
 import CreateContent from "./CreateContent";
-import Submit from "./submit";
+import UpdateContent from "./UpdateContent";
+
 class Subject extends Component{
    render(){
     return(
@@ -22,7 +23,12 @@ class Subject extends Component{
 
 
 class TOC extends Component{
-
+    shouldComponentUpdate(newProps,newState){
+      if(this.props.data===newProps.data){
+          return false;
+      }
+      return true;
+    }
   
     render(){
         var lists=[];
@@ -57,10 +63,11 @@ class TOC extends Component{
 };
 class im extends Component{
    constructor(props){
-       super(props);
+        super(props);
+
         this.state={
-            mode:'read',
-            
+            mode:'welcome',
+            max_content_id:3,
             subject:{title:"WEb",sub:"world wide web!"},
             welcome:{title:'welcome',desc:"hello, react"},
             contents:[
@@ -71,34 +78,72 @@ class im extends Component{
             selected_content_id:3,
         }
    }
-   render(){
-       var _title,_desc,_article=null;
-        if(this.state.mode==='welcome'){
-            _title=this.state.welcome.title;
-            _desc=this.state.welcome.desc;
-            _article=<ReadContent title={_title} desc={_desc}/>
-        }else if(this.state.mode==='read'){
-            
-            var i=0;
-            while(i<this.state.contents.length){
-                var data=this.state.contents[i];
-                if(data.id===this.state.selected_content_id){
-                    _title=data.title;
-                    _desc=data.desc;
-                    _article=<ReadContent title={_title} desc={_desc}/>
-                    break;
-                }
-                i=i+1;
+   getReadContent(){
+        var i=0;
+        while(i<this.state.contents.length){
+            var data=this.state.contents[i];
+            if(data.id===this.state.selected_content_id){
+                return data;
+                break;
             }
-        }else if(this.state.mode==='create'){
-            _article=<CreateContent onSubmit={
-                function(_title,_desc){
-                    //add content
-                    //console.log(_title,_desc);
-                }.bind(this)}>
+            i=i+1;
+        }   
+   }
+   getContent(){
+    var _title,_desc,_article=null;
+    if(this.state.mode==='welcome'){
+        _title=this.state.welcome.title;
+        _desc=this.state.welcome.desc;
+        _article=<ReadContent title={_title} desc={_desc}/>
+    }else if(this.state.mode==='read'){
+        
+        var _content=this.getReadContent();
+        _article=<ReadContent title={_content.title} desc={_content.desc}/>
+        
+    }else if(this.state.mode==='create'){
+        _article=<CreateContent onSubmit={
+            function(_title,_desc){
+                var new_max_content_id=this.state.max_content_id+1;
+                var _contents=Array.from(this.state.contents)
+                _contents.push({id:this.max_content_id,title:_title,desc:_desc});
+          
+                this.setState({
+                    max_content_id:new_max_content_id,
+                    contents:_contents,
+                    mode:'read',
+                    selected_content_id:this.state.max_content_id
+                
+                })
+                
+            }.bind(this)}>
 
-                </CreateContent>
-        }
+            </CreateContent>
+    }else if(this.state.mode==='update'){
+        _content=this.getReadContent();
+        _article=<UpdateContent data={_content} onSubmit={
+            function(_id,_title,_desc){
+                var _contents=Array.from(this.state.contents)
+                var i=0;
+                while(i<_contents.length){
+                    if(_contents[i].id===_id){
+                        _contents[i]={id:_id,title:_title,desc:_desc}
+                        break;
+                    }
+                    i=i+1;
+                }
+                this.setState({
+                    contents:_contents,
+                    mode:'read'
+                })
+                
+            }.bind(this)}>
+
+            </UpdateContent>
+    }
+    return _article;
+   }
+   render(){
+   
     return(
         <div className="App">
            <Subject 
@@ -108,7 +153,26 @@ class im extends Component{
                this.setState({mode:'welcome'});
            }.bind(this)}/>
            <Control  onchangeMode={function(_mode){
-               this.setState({mode:_mode});
+            
+               if (_mode === 'delete' ){
+                    if(window.confirm("이 게시물을 삭제하시겠습니까?")){
+                        var i=this.state.selected_content_id-1;
+          
+                        var new_max_content_id=this.state.max_content_id-1;
+                        var _contents=Array.from(this.state.contents);
+                        _contents.splice(i,1);
+                        this.setState({
+                            mode:'welcome',
+                            contents:_contents,
+                            max_content_id:new_max_content_id
+                        });
+                        alert("삭제되었습니다.");
+
+                    }
+               }else{
+                this.setState({mode:_mode});
+               }
+               
             }.bind(this)}/>
            
            <TOC onchangePage={function(id){
@@ -120,7 +184,7 @@ class im extends Component{
             data={this.state.contents}/>
             
            
-           {_article}
+           {this.getContent()}
         </div>
     );
    }
