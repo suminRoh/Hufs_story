@@ -1,0 +1,22 @@
+.article_box{
+    background-color: #eceaea;
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    border-spacing: 0;
+}
+
+.article_title{
+    background-color: #eceaea;
+    text-align: center;
+}
+
+.article_title h2{
+    margin: 0;
+    border: 0;
+}
+
+.article_content{
+    background-color: #eceaea;
+    text-align: center;
+}
