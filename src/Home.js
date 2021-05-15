@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import Control from "./submit/control";
+import CreateControl from "./submit/CreateControl";
+import UpdateControl from "./submit/UpdateControl";
 import CreateContent from "./submit/CreateContent";
 import PostContent from "./submit/PostContent";
 import ReadContent from "./submit/ReadContent";
@@ -31,14 +32,14 @@ class Home extends Component{
                 {id:7,title:"etc",desc:"기타"}
             ],
             contents:[ // 보여지는 게시글 리스트 
-                {id:0, category:'도서관',title:'도서관 시설 관련 청원', expire:'2021-05-12', people_num:15, desc:"도서관 자리 늘려주세요!!"},
+                {id:0, category:'복지',title:'도서관 시설 관련 청원', expire:'2021-05-12', people_num:15, desc:"도서관 자리 늘려주세요!!"},
                 {id:1, category:'기숙사',title:'기숙사 규칙 관련 청원', expire:'2021-05-12', people_num:15, desc:"기숙사 통금시간 늘려주세요!"},
                 {id:2, category:'교육',title:'교육 제도 관련 청원', expire:'2021-05-12', people_num:15, desc:"교육 제도를 바꿔주세요!"},
                 {id:3, category:'편의시설',title:'편의 시설 관련 청원', expire:'2021-05-12', people_num:15, desc:"식당 메뉴 다양화를 원합니다!"},
                 {id:4, category:'학생',title:'학생 관련 청원', expire:'2021-05-12', people_num:15, desc:"학생 인권에 대해 생각해주세요!"}
             ],
             total_contents:[ // 전체글 리스트 
-                {id:0, category:'도서관',title:'도서관 시설 관련 청원', expire:'2021-05-12', people_num:15, desc:"도서관 자리 늘려주세요!!"},
+                {id:0, category:'복지',title:'도서관 시설 관련 청원', expire:'2021-05-12', people_num:15, desc:"도서관 자리 늘려주세요!!"},
                 {id:1, category:'기숙사',title:'기숙사 규칙 관련 청원', expire:'2021-05-12', people_num:15, desc:"기숙사 통금시간 늘려주세요!"},
                 {id:2, category:'교육',title:'교육 제도 관련 청원', expire:'2021-05-12', people_num:15, desc:"교육 제도를 바꿔주세요!"},
                 {id:3, category:'편의시설',title:'편의 시설 관련 청원', expire:'2021-05-12', people_num:15, desc:"식당 메뉴 다양화를 원합니다!"},
@@ -58,6 +59,35 @@ class Home extends Component{
     }
     render(){
         var _title,_desc,_article=null;
+
+        var _type =
+            <Type onchangePage={function(category){
+                var _category = this.state.selected_category;
+                var _contents = Array.from(this.state.total_contents);
+                var category_contents = [];
+                var i = 0;
+
+                if(_category === "전체") {
+                    category_contents = _contents;
+                } else {
+                    while(i < _contents.length) {
+                        if(_contents[i].category === _category){
+                            category_contents.push(_contents[i]);
+                        }
+                        i = i + 1;
+                    }
+                }
+                    
+
+                this.setState({
+                mode:'post',
+                //selected_type_id:Number(id),
+                selected_category: category,
+                contents: category_contents
+                });
+                }.bind(this)}
+                data={this.state.type}/>
+
         var _table = 
             <>
                 <div>
@@ -77,6 +107,7 @@ class Home extends Component{
             <>
 
             </>
+            console.log(this.state.contents);
                
         }
         else if(this.state.mode==='read'){ //선택된 게시물과 리스트가 같이 뜸 
@@ -100,12 +131,12 @@ class Home extends Component{
             data={this.state.contents}/> */}
                     
             <ReadContent title={_title} desc={_desc}/>        
-            <Control  onchangeMode={function(_mode){
+            <UpdateControl  onchangeMode={function(_mode){
                     if(_mode==='delete'){
                         if(window.confirm("이 게시물을 삭제하시겠습니까?")){
                             var i=this.state.selected_content_id;
                             var new_max_content_id=this.state.max_content_id-1;
-                            var _contents=Array.from(this.state.contents);
+                            var _contents=Array.from(this.state.total_contents);
                             _contents.splice(i,1);
                             this.setState({
                                 mode:'welcome',
@@ -122,7 +153,8 @@ class Home extends Component{
 
             </>
            
-        }else if(this.state.mode==='post'){ //리스트만 뜸 
+        }else if(this.state.mode==='post'){ //리스트만 뜸
+
             _article=<>
                 {/* <PostContent onchangePage={function(id){
                     this.setState({
@@ -131,18 +163,18 @@ class Home extends Component{
                  });
                 }.bind(this)}
                 data={this.state.contents}/> */}
-                <Control  onchangeMode={function(_mode){
+                <CreateControl  onchangeMode={function(_mode){
                 
                     if(_mode==='delete'){
                         if(window.confirm("이 게시물을 삭제하시겠습니까?")){
                             var i=this.state.selected_content_id;
                             var new_max_content_id=this.state.max_content_id-1;
-                            var _contents=Array.from(this.state.contents);
+                            var _contents=Array.from(this.state.total_contents);
                             _contents.splice(i,1);
                             this.setState({
-                                mode:'welcome',
+                                mode:'read',
                                 total_contents:_contents,
-                                max_content_id:new_max_content_id
+                                max_content_id:new_max_content_id,
                             });
                             alert("삭제되었습니다.");
                         }
@@ -175,13 +207,14 @@ class Home extends Component{
 
         }else if(this.state.mode==='update'){
             i=this.state.selected_content_id;
-            var _content=this.state.contents[i];
+            var _content=this.state.total_contents[i];
             _article=<UpdateContent data={_content} onSubmit={
-                function(_id,_title,_desc){
+                function(_id,_category,_title,_desc){
+                    console.log(_id, _category, _title, _desc);
                     i=this.state.selected_content_id;
                     var _type=this.state.selected_type_id;
-                    var _contents=Array.from(this.state.contents);
-                    _contents[i]={type:_type,title:_title,desc:_desc,id:_id}
+                    var _contents=Array.from(this.state.total_contents);
+                    _contents[i]={id:_id,category:_category,title:_title,expire:'2021-05-12',people_num:0,desc:_desc}
     
                     this.setState({
                         total_contents:_contents,
@@ -192,49 +225,21 @@ class Home extends Component{
     
                 </UpdateContent>
         }
-        // 카테고리 별로 뜨게
-        // if(this.state.selected_category === "전체") {
-        //     var _category = this.state.selected_category;
-        //     var _contents = Array.from(this.state.total_contents);
-        //     var category_contents = [];
-        //     var i = 0;
-        //     while(i < _contents.length) {
-        //         if(_contents[i].category === _category){
-        //             category_contents.push(_contents[i]);
-        //         }
-        //         i = i + 1;
-        //     }
-        //     this.setState(
-        //         contents = category_contents
-        //     );
-
-        // } else if(this.state.selected_category === "기숙사") {
-
-        // } else if(this.state.selected_category === 2) {
-            
-        // } else if(this.state.selected_category === 3) {
-            
-        // } else if(this.state.selected_category === 4) {
-            
-        // } else if(this.state.selected_category === 5) {
-            
-        // } else if(this.state.selected_category === 6) {
-            
-        // } else{
-
-        // }
+        
         return(
             <div className="category">
           
-                <h1>
+                <h1 className="main-title">
+                    <img src="http://hufsjournal.com/wp-content/uploads/2015/08/%EB%AF%B8%EB%84%A4%EB%A5%B4%EB%B0%94-%EC%97%AC%EC%8B%A0%EA%B3%BC-%EB%B6%80%EC%97%89%EC%9D%B4.jpg" width="80" height="80" alt="로고"/>
+                    <p></p>     
                     <a href="/" >
                         한국외국어대학교 청원 홈페이지
                     </a> 
-                    <img src="http://hufsjournal.com/wp-content/uploads/2015/08/%EB%AF%B8%EB%84%A4%EB%A5%B4%EB%B0%94-%EC%97%AC%EC%8B%A0%EA%B3%BC-%EB%B6%80%EC%97%89%EC%9D%B4.jpg" width="80" height="80" alt="로고"/>     
+                    
                 </h1>
                 
                 
-                <Type onchangePage={function(category){
+                {/* <Type onchangePage={function(category){
                     var _category = this.state.selected_category;
                     var _contents = Array.from(this.state.total_contents);
                     var category_contents = [];
@@ -259,9 +264,9 @@ class Home extends Component{
                     contents: category_contents
                     });
                     }.bind(this)}
-                    data={this.state.type}/>
+                    data={this.state.type}/> */}
                 
-            
+                {_type}
                 {_article}
                 {_table}
                 
