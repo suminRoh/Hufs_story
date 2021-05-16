@@ -17,22 +17,48 @@ class UpdateContent extends Component{
     render(){
         console.log(this.props.data);
         return(
+
+            <article className = "writing-form">
+                <h2 className = "form-title">작성한 청원글 수정하기</h2>
+                <form className = "form-content" method="post"
+
             <article>
                 <h2>Update</h2>
                 <form method="post"
+
                     onSubmit={function(e){
                       
                         e.preventDefault();
                         
                         this.props.onSubmit(
                             this.state.id,
+
+                            e.target.selectBox.value,
+
+
                             this.state.title,
                             this.state.desc
                         );
                         alert("submit");
                     }.bind(this)}
+
+                >   
+                    <input type="hidden" name="id" value={this.state.id}></input>
+                    <p>
+                        <select name="selectBox" onChange={this.inputFormHandler.bind(this)}>
+                            <option value="기숙사">기숙사</option>
+                            <option value="교육">교육</option>
+                            <option value="편의시설">편의시설</option>
+                            <option value="인권">인권</option>
+                            <option value="학생">학생</option>
+                            <option value="복지">복지</option>
+                            <option value="기타">기타</option>
+                        </select>
+                    </p>
+
                 >
                     <input type="hidden" name="id" value={this.state.id}></input>
+
                     <p><input 
                             type="text"
                             name="title"

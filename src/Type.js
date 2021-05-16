@@ -8,14 +8,23 @@ class Type extends Component{
         var i=0;
         while(i<data.length){
             lists.push(
+
+                <td className='table-column' key={data[i].id}>
+
                 <td key={data[i].id}>
+
                 <a 
                 href={"/content/"+data[i].id}
                 data-id={data[i].id}
                 onClick={function(e){
                     //console.log(e.target.dataset);
                     e.preventDefault();
+
+                    //console.log(e.target.text);
+                    this.props.onchangePage(e.target.text);
+
                     this.props.onchangePage(e.target.dataset.id);
+
                 }.bind(this)}
                 >
                 {data[i].desc}
@@ -25,9 +34,15 @@ class Type extends Component{
             i=i+1;
         }
         return(
+
+            <table className="table"> 
+                <tbody>
+                    <tr className='table-row'>
+
             <table > 
                 <tbody>
                     <tr >
+
                         {lists}
                     </tr>
                 </tbody>
