@@ -10,6 +10,7 @@ import ArticleTableHead from './table/ArticleTableHead';
 import ArticleTableBody from './table/ArticleTableBody';
 import Type from "./Type";
 import "./table/Table.css";
+import AgreeContetnt from "./submit/AgreeContent";
 
 
 class Home extends Component{
@@ -107,7 +108,7 @@ class Home extends Component{
             <>
 
             </>
-            console.log(this.state.contents);
+           
                
         }
         else if(this.state.mode==='read'){ //선택된 게시물과 리스트가 같이 뜸 
@@ -117,8 +118,10 @@ class Home extends Component{
         
             _title=this.getReadContent().title;
             _desc=this.getReadContent().desc;
+            var _agree=this.getReadContent().people_num;
             //console.log(this.getReadContent());
             //console.log(_title, _desc);
+            console.log(_agree);
             _article=<>
                
                 
@@ -130,7 +133,7 @@ class Home extends Component{
             }.bind(this)}
             data={this.state.contents}/> */}
                     
-            <ReadContent title={_title} desc={_desc}/>        
+            <ReadContent title={_title} desc={_desc} agree={_agree}/>       
             <UpdateControl  onchangeMode={function(_mode){
                     if(_mode==='delete'){
                         if(window.confirm("이 게시물을 삭제하시겠습니까?")){
@@ -148,11 +151,29 @@ class Home extends Component{
                             });
                             alert("삭제되었습니다.");
                         }
-                    }else{
+                    }else if(_mode=='agree'){
+                       if(window.confirm("청원에 동의하시겠습니까?")){
+                            var _category=this.state.selected_category;
+                
+                            var i=this.state.selected_content_id;
+                            var _contents=Array.from(this.state.total_contents);
+                            _contents[i].people_num+=1;
+                            this.setState({
+                                mode:'read',
+                                total_contents:_contents,
+                                //contents:_contents
+
+                            });
+                       };
+                    
+                    }
+                    else{
                         this.setState({mode:_mode});
                     }
                
                 }.bind(this)}/>
+             
+           
 
             </>
            
@@ -200,7 +221,7 @@ class Home extends Component{
                     console.log(_contents);
                     this.setState({
                         total_contents:_contents,
-                        contents:_contents,
+                        //contents:_contents,
                         selected_category: "전체",
                         mode:'post', 
                         max_content_id:new_max_content_id
@@ -224,7 +245,10 @@ class Home extends Component{
     
                     this.setState({
                         total_contents:_contents,
-                        mode:'read'
+                        contents:_contents,
+                        mode:'post',
+                        selected_category: "전체",
+                        
                     })
                     
                 }.bind(this)}>

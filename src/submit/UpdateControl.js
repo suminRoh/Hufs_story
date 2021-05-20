@@ -7,6 +7,11 @@ class UpdateControl extends Component{//create update delete 기능
                 <tbody>
                     <tr >
                         <td>
+                            <button value="agree" onClick={function(e){
+                                var a='agree';
+                                e.preventDefault();
+                                this.props.onchangeMode(a);
+                            }.bind(this)}>청원 동의하기</button>
                             <a href="/update" onClick={function(e){
                                 var a='update';
                                 e.preventDefault();

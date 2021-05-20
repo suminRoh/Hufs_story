@@ -8,13 +8,15 @@ class ReadContent extends Component{
                 <div className="article_title">
                     <h2>{this.props.title}</h2>
                 </div>
+                <small>청원동의 {this.props.agree}명</small>
                 <div className="article_content">
+                    
+               
+                    <h3> {this.props.desc}</h3>
                     <p></p>
-                    <h3>청원 내용</h3>
-                    <p></p>
-                    {this.props.desc}
+                   
                 </div>
-    
+                
             
             </article>
         );
