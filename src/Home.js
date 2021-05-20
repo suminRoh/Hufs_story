@@ -10,7 +10,7 @@ import ArticleTableHead from './table/ArticleTableHead';
 import ArticleTableBody from './table/ArticleTableBody';
 import Type from "./Type";
 import "./table/Table.css";
-import AgreeContetnt from "./submit/AgreeContent";
+
 
 
 class Home extends Component{
