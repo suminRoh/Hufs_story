@@ -22,9 +22,24 @@
     color: white;
 }
 .writing-form {
-    background-color: #eceaea;
-    width: 50%;
-    margin: 0 auto;
+    background-color:white;
+    
+    margin: 5%;
     text-align: center;
     border-spacing: 0;
+}
+.form-title{
+    text-align: left;
+}
+.Tline{
+    height: 4px;
+    width: 99%;
+    left: 80px;
+    top: 312px;
+    border-radius: 0px;
+    background: #013642;
+}
+.createFont{
+    text-align: left;
+    font-weight:bold;
 }

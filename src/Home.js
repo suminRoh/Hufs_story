@@ -1,9 +1,7 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import CreateControl from "./submit/CreateControl";
 import UpdateControl from "./submit/UpdateControl";
 import CreateContent from "./submit/CreateContent";
-import PostContent from "./submit/PostContent";
 import ReadContent from "./submit/ReadContent";
 import UpdateContent from "./submit/UpdateContent";
 import ArticleTableHead from './table/ArticleTableHead';
@@ -60,8 +58,11 @@ class Home extends Component{
     }
     render(){
         var _title,_desc,_article=null;
-
-        var _type = //카테고리 분류 
+        if(this.state.mode==='create'){
+            var _type=<div></div>
+            var _table=<div></div>
+        }else{
+            _type = //카테고리 분류 
             <Type onchangePage={function(category){
                 var _category = category;
                 var _contents = Array.from(this.state.total_contents);
@@ -89,7 +90,7 @@ class Home extends Component{
                 }.bind(this)}
                 data={this.state.type}/>
 
-        var _table = 
+        _table = 
             <>
                 <div>
                     <table className = "table"> 
@@ -103,35 +104,21 @@ class Home extends Component{
                     </table>
                 </div>
             </>
-        if(this.state.mode==='welcome'){
-            _article=
-            <>
-
-            </>
-           
-               
+            
         }
-        else if(this.state.mode==='read'){ //선택된 게시물과 리스트가 같이 뜸 
+   
+        if(this.state.mode==='read'){ //선택된 게시물과 리스트가 같이 뜸 
 
             var i=this.state.selected_content_id;
-            var data=this.state.contents[i];
         
             _title=this.getReadContent().title;
             _desc=this.getReadContent().desc;
             var _agree=this.getReadContent().people_num;
-            //console.log(this.getReadContent());
-            //console.log(_title, _desc);
+        
             console.log(_agree);
             _article=<>
                
-                
-            {/* <PostContent onchangePage={function(id){
-                this.setState({
-                    mode:'read',
-                    selected_content_id:Number(id)
-                    });
-            }.bind(this)}
-            data={this.state.contents}/> */}
+
                     
             <ReadContent title={_title} desc={_desc} agree={_agree}/>       
             <UpdateControl  onchangeMode={function(_mode){
@@ -142,26 +129,23 @@ class Home extends Component{
                             var _contents=Array.from(this.state.total_contents);
                             _contents.splice(i,1);
                             this.setState({
-                                mode:'welcome',
                                 contents:_contents,
                                 selected_category: "전체",
                                 mode:'post', 
                                 total_contents:_contents,
-                               // max_content_id:new_max_content_id
+                               max_content_id:new_max_content_id
                             });
                             alert("삭제되었습니다.");
                         }
-                    }else if(_mode=='agree'){
+                    }else if(_mode==='agree'){
                        if(window.confirm("청원에 동의하시겠습니까?")){
-                            var _category=this.state.selected_category;
                 
-                            var i=this.state.selected_content_id;
-                            var _contents=Array.from(this.state.total_contents);
+                            i=this.state.selected_content_id;
+                            _contents=Array.from(this.state.total_contents);
                             _contents[i].people_num+=1;
                             this.setState({
                                 mode:'read',
                                 total_contents:_contents,
-                                //contents:_contents
 
                             });
                        };
@@ -180,13 +164,6 @@ class Home extends Component{
         }else if(this.state.mode==='post'){ //리스트만 뜸
 
             _article=<>
-                {/* <PostContent onchangePage={function(id){
-                    this.setState({
-                        selected_content_id:Number(id),
-                        mode:'read'
-                 });
-                }.bind(this)}
-                data={this.state.contents}/> */}
                 <CreateControl  onchangeMode={function(_mode){
                 
                     if(_mode==='delete'){
@@ -212,7 +189,18 @@ class Home extends Component{
             </>
 
         }else if(this.state.mode==='create'){
-            _article=<CreateContent onSubmit={
+            _article=<CreateContent 
+            onCancel={
+                function(_mode){
+                    if(window.confirm("청원 글 작성을 중단하시겠습니까?")){
+                        this.setState({
+                            mode:_mode
+                        })
+                        alert("청원 글 작성이 취소되었습니다.");
+                    }
+                    
+                }.bind(this)}
+            onSubmit={
                 function(_category, _title, _desc){
                     var new_max_content_id=this.state.max_content_id+1;
                     //var _type=this.state.selected_type_id;
@@ -221,13 +209,14 @@ class Home extends Component{
                     console.log(_contents);
                     this.setState({
                         total_contents:_contents,
-                        //contents:_contents,
+                        contents:_contents,
                         selected_category: "전체",
                         mode:'post', 
                         max_content_id:new_max_content_id
                     })
-
+                    alert("청원 글이 등록되었습니다!");
                 }.bind(this)}>
+                
     
                 </CreateContent>
 
@@ -239,7 +228,6 @@ class Home extends Component{
                     var _id=_content.id;
                     console.log(_id, _category, _title, _desc);
                     i=this.state.selected_content_id;
-                    var _type=this.state.selected_type_id;
                     var _contents=Array.from(this.state.total_contents);
                     _contents[i]={id:_id,category:_category,title:_title,expire:'2021-05-12',people_num:0,desc:_desc}
     
@@ -268,31 +256,7 @@ class Home extends Component{
                     
                 </h1>
                 
-                
-                {/* <Type onchangePage={function(category){
-                    var _category = this.state.selected_category;
-                    var _contents = Array.from(this.state.total_contents);
-                    var category_contents = [];
-                    var i = 0;
-                    if(_category === "전체") {
-                        category_contents = _contents;
-                    } else {
-                        while(i < _contents.length) {
-                            if(_contents[i].category === _category){
-                                category_contents.push(_contents[i]);
-                            }
-                            i = i + 1;
-                        }
-                    }
-                        
-                    this.setState({
-                    mode:'post',
-                    //selected_type_id:Number(id),
-                    selected_category: category,
-                    contents: category_contents
-                    });
-                    }.bind(this)}
-                    data={this.state.type}/> */}
+   
                 
                 {_type} 
                 {_article}
