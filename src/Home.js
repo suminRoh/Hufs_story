@@ -8,6 +8,7 @@ import ArticleTableHead from './table/ArticleTableHead';
 import ArticleTableBody from './table/ArticleTableBody';
 import Type from "./Type";
 import "./table/Table.css";
+import HUFS from './HUFS.png';
 
 
 
@@ -58,7 +59,7 @@ class Home extends Component{
     }
     render(){
         var _title,_desc,_article=null;
-        if(this.state.mode==='create'){
+        if(this.state.mode==='create' || this.state.mode==='update'){
             var _type=<div></div>
             var _table=<div></div>
         }else{
@@ -115,11 +116,7 @@ class Home extends Component{
             _desc=this.getReadContent().desc;
             var _agree=this.getReadContent().people_num;
         
-            console.log(_agree);
             _article=<>
-               
-
-                    
             <ReadContent title={_title} desc={_desc} agree={_agree}/>       
             <UpdateControl  onchangeMode={function(_mode){
                     if(_mode==='delete'){
@@ -238,7 +235,7 @@ class Home extends Component{
                         selected_category: "전체",
                         
                     })
-                    
+                    alert("청원 글이 수정되었습니다!");
                 }.bind(this)}>
     
                 </UpdateContent>
@@ -246,17 +243,16 @@ class Home extends Component{
         
         return(
             <div className="category">
-          
-                <h1 className="main-title">
-                    <img src="http://hufsjournal.com/wp-content/uploads/2015/08/%EB%AF%B8%EB%84%A4%EB%A5%B4%EB%B0%94-%EC%97%AC%EC%8B%A0%EA%B3%BC-%EB%B6%80%EC%97%89%EC%9D%B4.jpg" width="80" height="80" alt="로고"/>
-                    <p></p>     
-                    <a href="/" >
-                        한국외국어대학교 청원 홈페이지
-                    </a> 
-                    
-                </h1>
-                
-   
+               
+                <a className="main-title" href="/" >
+                    &nbsp;
+                    <img className="image" 
+                    src={HUFS}
+                    width="30" height="28" alt="로고"/> 
+                      &nbsp;
+                      외청 
+                </a> 
+                <hr className="mainline"></hr>
                 
                 {_type} 
                 {_article}
