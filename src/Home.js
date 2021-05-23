@@ -59,7 +59,7 @@ class Home extends Component{
     }
     render(){
         var _title,_desc,_article=null;
-        if(this.state.mode==='create' || this.state.mode==='update'){
+        if(this.state.mode==='create' || this.state.mode==='update'  || this.state.mode==='read'){
             var _type=<div></div>
             var _table=<div></div>
         }else{
@@ -114,10 +114,12 @@ class Home extends Component{
         
             _title=this.getReadContent().title;
             _desc=this.getReadContent().desc;
+            var _category=this.getReadContent().category;
+            var _expire=this.getReadContent().expire;
             var _agree=this.getReadContent().people_num;
         
             _article=<>
-            <ReadContent title={_title} desc={_desc} agree={_agree}/>       
+            <ReadContent title={_title} desc={_desc} agree={_agree} category={_category} expire={_expire}/>       
             <UpdateControl  onchangeMode={function(_mode){
                     if(_mode==='delete'){
                         if(window.confirm("이 게시물을 삭제하시겠습니까?")){
@@ -223,7 +225,6 @@ class Home extends Component{
             _article=<UpdateContent data={_content} onSubmit={
                 function(_category,_title,_desc){
                     var _id=_content.id;
-                    console.log(_id, _category, _title, _desc);
                     i=this.state.selected_content_id;
                     var _contents=Array.from(this.state.total_contents);
                     _contents[i]={id:_id,category:_category,title:_title,expire:'2021-05-12',people_num:0,desc:_desc}
