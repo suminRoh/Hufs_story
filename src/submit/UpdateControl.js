@@ -28,7 +28,7 @@ class UpdateControl extends Component{//create update delete 기능
                     </tr>
                 </tbody>
             </table>
-
+            <hr className="mainline"></hr>
             <a className="goToPost-button" href="/post" onClick={function(e){
                 var a='post';
                 e.preventDefault();
